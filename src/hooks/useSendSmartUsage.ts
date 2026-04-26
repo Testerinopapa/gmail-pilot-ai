@@ -25,6 +25,12 @@ export function useSendSmartUsage() {
     queryKey: ["send-smart-usage"],
     staleTime: 60_000,
     refetchOnWindowFocus: true,
+    retry: (failureCount, error) => {
+      if (failureCount >= 3) return false;
+      const msg = (error as Error)?.message ?? "";
+      return /\b(5\d\d|temporarily unavailable|network)\b/i.test(msg);
+    },
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
     queryFn: async () => {
       const {
         data: { session },
@@ -33,26 +39,34 @@ export function useSendSmartUsage() {
         throw new Error("Not signed in");
       }
 
-      const res = await fetch(SEND_SMART_URL, {
-        method: "GET",
-        headers: {
-          apikey: SEND_SMART_ANON_KEY,
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+      let lastErr: Error | null = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const res = await fetch(SEND_SMART_URL, {
+          method: "GET",
+          headers: {
+            apikey: SEND_SMART_ANON_KEY,
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
-      if (!res.ok) {
+        if (res.ok) {
+          return (await res.json()) as SendSmartUsageData;
+        }
+
         let message = `Request failed (${res.status})`;
         try {
           const body = await res.json();
           if (body?.error) message = body.error;
+          else if (body?.message) message = body.message;
         } catch {
           // ignore
         }
-        throw new Error(message);
-      }
+        lastErr = new Error(message);
 
-      return (await res.json()) as SendSmartUsageData;
+        if (res.status < 500) throw lastErr;
+        await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
+      }
+      throw lastErr ?? new Error("Request failed");
     },
   });
 
