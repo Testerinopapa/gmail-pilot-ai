@@ -8,10 +8,11 @@ import ConnectExtension from "@/components/ConnectExtension";
 import Reveal from "@/components/landing/Reveal";
 import SendSmartUsageCard from "@/components/SendSmartUsageCard";
 import FlaggedReviewSection from "@/components/dashboard/FlaggedReviewSection";
+import MiniChat from "@/components/MiniChat";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-dashboard-root>
       <DashboardHeader />
       <div className="animate-fade-in">
         <DashboardHero />
@@ -53,6 +54,8 @@ const Dashboard = () => {
           <Reveal delay={300} className="hover-scale"><HelpSection /></Reveal>
         </div>
       </div>
+
+      <MiniChat />
     </div>
   );
 };
