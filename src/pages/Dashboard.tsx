@@ -8,6 +8,7 @@ import ConnectExtension from "@/components/ConnectExtension";
 import Reveal from "@/components/landing/Reveal";
 import SendSmartUsageCard from "@/components/SendSmartUsageCard";
 import FlaggedReviewSection from "@/components/dashboard/FlaggedReviewSection";
+import AgentRepliesSection from "@/components/dashboard/AgentRepliesSection";
 import MiniChat from "@/components/MiniChat";
 
 const Dashboard = () => {
@@ -33,6 +34,13 @@ const Dashboard = () => {
         <Reveal delay={90}>
           <div id="review">
             <FlaggedReviewSection />
+          </div>
+        </Reveal>
+
+        {/* Agent Replies — AI-sent replies */}
+        <Reveal delay={95}>
+          <div id="replies">
+            <AgentRepliesSection />
           </div>
         </Reveal>
 
