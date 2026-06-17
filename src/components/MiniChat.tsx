@@ -24,6 +24,7 @@ const QUICK_ACTIONS: QuickAction[] = [
   { label: "Support issues", icon: LifeBuoy, prompt: "Review any support-related emails and tell me what needs a reply." },
   { label: "What to handle first?", icon: ListChecks, prompt: "Prioritize the visible dashboard items and tell me what I should handle first." },
   { label: "Today's report", icon: FileText, prompt: "Create a short daily report based on the visible dashboard." },
+  { label: "Recent replies", icon: Send, prompt: "Review the agent replies — who got replies, and are there any problems?" },
   { label: "Usage summary", icon: Activity, prompt: "Summarize the visible usage, replies, and quota information." },
 ];
 
